@@ -32,9 +32,16 @@ export function isRiotProxy(): boolean {
   return Boolean(import.meta.env.VITE_RIOT_API_PROXY)
 }
 
+/** Mesma regra do proxy: /account → /riot/account, /match → /lol/match. */
+function toRiotPath(path: string): string {
+  if (path.startsWith("/account")) return "/riot" + path
+  if (path.startsWith("/match")) return "/lol" + path
+  return path
+}
+
 /**
  * GET request to Riot API. Used by page services (home, matches).
- * Path já deve vir com barras (ex: /riot/account/v1/accounts/...).
+ * Path com barra: /account/..., /match/v5/... No proxy a gente prefixa; no proxy o backend faz isso.
  */
 export async function riotFetch<T>(
   region: RiotRegion,
@@ -43,9 +50,10 @@ export async function riotFetch<T>(
 ): Promise<T> {
   const base = getRiotBaseUrl(region)
   const useProxy = isRiotProxy()
+  const fullPath = useProxy ? path : toRiotPath(path)
   const search = new URLSearchParams(query)
   if (useProxy) search.set("region", region)
-  const url = search.toString() ? `${base}${path}?${search}` : `${base}${path}`
+  const url = search.toString() ? `${base}${fullPath}?${search}` : `${base}${fullPath}`
 
   const res = await fetch(url, { headers: getRiotHeaders() })
 

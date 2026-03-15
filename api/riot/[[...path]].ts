@@ -45,6 +45,10 @@ export default async function handler(
     riotPath = "/"
   }
 
+  // Paths da Riot: /riot/account/..., /lol/match/... O front manda /account/... e /match/...; a gente coloca o prefixo.
+  if (riotPath.startsWith("/account")) riotPath = "/riot" + riotPath
+  else if (riotPath.startsWith("/match")) riotPath = "/lol" + riotPath
+
   const region = (req.query.region as string) || "americas"
   const base = REGION_BASE[region]
   if (!base) {
@@ -57,6 +61,9 @@ export default async function handler(
   search.delete("path")
   const qs = search.toString()
   const url = qs ? `${base}${riotPath}?${qs}` : `${base}${riotPath}`
+
+  // Header de debug: no DevTools (Network) dá para ver que a req foi para a API Riot
+  res.setHeader("X-Proxy-Target", url)
 
   try {
     const response = await fetch(url, {

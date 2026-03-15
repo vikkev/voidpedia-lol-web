@@ -2,14 +2,12 @@ import { riotFetch } from "@/lib/riot"
 import type { RiotMatch, RiotRegion } from "../types"
 
 /**
- * Match v5 API (doc):
+ * Match v5 API (doc). Paths sem /lol; o proxy adiciona.
  * - GET /lol/match/v5/matches/by-puuid/{puuid}/ids     → list match ids by puuid
- * - GET /lol/match/v5/matches/by-puuid/{puuid}/replays → player replays
- * - GET /lol/match/v5/matches/{matchId}               → match by id
- * - GET /lol/match/v5/matches/{matchId}/timeline      → match timeline
+ * - GET /lol/match/v5/matches/{matchId}                → match by id
  */
-const PATH_MATCH_IDS = "/lol/match/v5/matches/by-puuid"
-const PATH_MATCH = "/lol/match/v5/matches"
+const PATH_MATCH_IDS = "/match/v5/matches/by-puuid"
+const PATH_MATCH = "/match/v5/matches"
 const DEFAULT_MATCH_COUNT = 10
 const PAGE_SIZE = 10
 

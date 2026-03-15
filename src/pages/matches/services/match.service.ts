@@ -1,7 +1,7 @@
 import { riotFetch } from "@/lib/riot"
 import type { RiotMatch, RiotRegion } from "../types"
 
-const PATH_MATCH = "/lol/match/v5/matches"
+const PATH_MATCH = "/match/v5/matches"
 
 /**
  * Fetches match detail by ID.
