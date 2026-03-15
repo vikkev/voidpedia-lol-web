@@ -11,6 +11,7 @@ const REGION_BASE: Record<string, string> = {
  * nunca no repositório nem no front.
  *
  * Front usa: VITE_RIOT_API_PROXY = "https://seu-dominio.vercel.app/api/riot"
+ * Rewrite no vercel.json manda /api/riot/* para cá com ?path=...
  */
 export default async function handler(
   req: VercelRequest,
@@ -30,7 +31,7 @@ export default async function handler(
     return
   }
 
-  // Path: from query (Vercel catch-all) ou extraído da URL
+  // Path: do query (rewrite envia ?path=account/v1/...) ou da URL
   let riotPath: string
   const pathFromQuery = req.query.path
   if (Array.isArray(pathFromQuery) && pathFromQuery.length > 0) {
@@ -64,7 +65,6 @@ export default async function handler(
   const qs = search.toString()
   const url = qs ? `${base}${riotPath}?${qs}` : `${base}${riotPath}`
 
-  // Header de debug: no DevTools (Network) dá para ver que a req foi para a API Riot
   res.setHeader("X-Proxy-Target", url)
 
   try {

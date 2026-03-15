@@ -1,5 +1,6 @@
 {
   "rewrites": [
+    { "source": "/api/riot/(.*)", "destination": "/api/riot?path=$1" },
     { "source": "/((?!api/|assets/).*)", "destination": "/index.html" }
   ]
 }
