@@ -30,8 +30,21 @@ export default async function handler(
     return
   }
 
-  const path = (req.query.path as string[]) ?? []
-  const riotPath = "/" + path.join("/")
+  // Path: from query (Vercel catch-all) ou extraído da URL
+  let riotPath: string
+  const pathFromQuery = req.query.path
+  if (Array.isArray(pathFromQuery) && pathFromQuery.length > 0) {
+    riotPath = "/" + pathFromQuery.join("/")
+  } else if (typeof pathFromQuery === "string" && pathFromQuery) {
+    riotPath = pathFromQuery.startsWith("/") ? pathFromQuery : "/" + pathFromQuery
+  } else if (req.url) {
+    const pathname = req.url.split("?")[0]
+    const prefix = "/api/riot"
+    riotPath = pathname.startsWith(prefix) ? pathname.slice(prefix.length) || "/" : "/"
+  } else {
+    riotPath = "/"
+  }
+
   const region = (req.query.region as string) || "americas"
   const base = REGION_BASE[region]
   if (!base) {
