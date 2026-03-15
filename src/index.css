@@ -1,0 +1,350 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/space-grotesk";
+@import "@fontsource/orbitron";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================
+   SHARED TOKENS (both modes)
+   ============================================ */
+:root {
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+  --transition-theme: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+}
+
+/* ============================================
+   LIGHT MODE
+   ============================================ */
+:root {
+  color-scheme: light;
+
+  /* Design tokens — light */
+  --color-bg-primary: #f5f0ff;
+  --color-bg-secondary: #ede5ff;
+  --color-bg-tertiary: #e4d8ff;
+  --color-card-bg: #ffffff;
+  --color-card-bg-hover: #faf7ff;
+  --color-card-border: rgba(139, 92, 246, 0.18);
+  --color-card-border-hover: rgba(139, 92, 246, 0.4);
+  --color-accent: #7c3aed;
+  --color-accent-hover: #6d28d9;
+  --color-accent-muted: rgba(124, 58, 237, 0.1);
+  --color-text-primary: #1e0a3c;
+  --color-text-secondary: #4c2d7a;
+  --color-text-muted: #7c5fa0;
+  --color-victory: #16a34a;
+  --color-victory-bg: rgba(22, 163, 74, 0.08);
+  --color-victory-border: rgba(22, 163, 74, 0.25);
+  --color-defeat: #dc2626;
+  --color-defeat-bg: rgba(220, 38, 38, 0.08);
+  --color-defeat-border: rgba(220, 38, 38, 0.25);
+  --color-border: rgba(124, 58, 237, 0.15);
+  --color-border-hover: rgba(124, 58, 237, 0.35);
+
+  /* Neon glow (light — range curto) */
+  --shadow-neon-sm: 0 0 3px rgba(124, 58, 237, 0.5), 0 0 6px rgba(124, 58, 237, 0.25);
+  --shadow-neon-md: 0 0 4px rgba(124, 58, 237, 0.5), 0 0 8px rgba(124, 58, 237, 0.2);
+  --shadow-neon-toast: 0 0 12px rgba(124, 58, 237, 0.4), 0 0 24px rgba(124, 58, 237, 0.2), 0 0 36px rgba(124, 58, 237, 0.1);
+  --shadow-neon-text: 0 0 4px rgba(124, 58, 237, 0.6), 0 0 8px rgba(124, 58, 237, 0.3);
+  --color-neon-hover: rgba(192, 38, 211, 0.9);
+
+  /* Shadcn mapping */
+  --background: var(--color-bg-primary);
+  --foreground: var(--color-text-primary);
+  --card: var(--color-card-bg);
+  --card-foreground: var(--color-text-primary);
+  --popover: var(--color-card-bg);
+  --popover-foreground: var(--color-text-primary);
+  --primary: var(--color-accent);
+  --primary-foreground: #f0e6ff;
+  --secondary: var(--color-bg-secondary);
+  --secondary-foreground: var(--color-text-primary);
+  --muted: var(--color-bg-tertiary);
+  --muted-foreground: var(--color-text-secondary);
+  --accent: var(--color-card-bg-hover);
+  --accent-foreground: var(--color-text-primary);
+  --destructive: var(--color-defeat);
+  --border: var(--color-border);
+  --input: var(--color-border);
+  --ring: var(--color-accent);
+  --radius: var(--radius-lg);
+  --sidebar: var(--color-bg-secondary);
+  --sidebar-foreground: var(--color-text-primary);
+  --sidebar-primary: var(--color-accent);
+  --sidebar-primary-foreground: #f0e6ff;
+  --sidebar-accent: var(--color-card-bg-hover);
+  --sidebar-accent-foreground: var(--color-text-primary);
+  --sidebar-border: var(--color-border);
+  --sidebar-ring: var(--color-accent);
+  --chart-1: oklch(0.809 0.105 251.813);
+  --chart-2: oklch(0.623 0.214 259.815);
+  --chart-3: oklch(0.546 0.245 262.881);
+  --chart-4: oklch(0.488 0.243 264.376);
+  --chart-5: oklch(0.424 0.199 265.638);
+}
+
+/* ============================================
+   DARK MODE
+   ============================================ */
+.dark {
+  color-scheme: dark;
+
+  --color-bg-primary: #0d0018;
+  --color-bg-secondary: #120020;
+  --color-bg-tertiary: #1a002e;
+  --color-card-bg: #1c0038;
+  --color-card-bg-hover: #230048;
+  --color-card-border: rgba(160, 0, 255, 0.18);
+  --color-card-border-hover: rgba(200, 0, 255, 0.35);
+  --color-accent: #a855f7;
+  --color-accent-hover: #c084fc;
+  --color-accent-muted: rgba(168, 85, 247, 0.15);
+  --color-text-primary: #f0e6ff;
+  --color-text-secondary: #b39dcc;
+  --color-text-muted: #7c5fa0;
+  --color-victory: #22c55e;
+  --color-victory-bg: rgba(34, 197, 94, 0.12);
+  --color-victory-border: rgba(34, 197, 94, 0.3);
+  --color-defeat: #ef4444;
+  --color-defeat-bg: rgba(239, 68, 68, 0.12);
+  --color-defeat-border: rgba(239, 68, 68, 0.3);
+  --color-border: rgba(160, 0, 255, 0.15);
+  --color-border-hover: rgba(200, 0, 255, 0.3);
+
+  /* Neon glow (dark — range curto, intenso) */
+  --shadow-neon-sm: 0 0 4px rgba(168, 85, 247, 0.6), 0 0 8px rgba(168, 85, 247, 0.3);
+  --shadow-neon-md: 0 0 6px rgba(168, 85, 247, 0.7), 0 0 12px rgba(168, 85, 247, 0.35);
+  --shadow-neon-toast: 0 0 16px rgba(168, 85, 247, 0.5), 0 0 32px rgba(168, 85, 247, 0.25), 0 0 48px rgba(168, 85, 247, 0.15);
+  --shadow-neon-text: 0 0 5px rgba(168, 85, 247, 0.8), 0 0 10px rgba(168, 85, 247, 0.4);
+  --color-neon-hover: rgba(224, 64, 251, 0.95);
+
+  --background: var(--color-bg-primary);
+  --foreground: var(--color-text-primary);
+  --card: var(--color-card-bg);
+  --card-foreground: var(--color-text-primary);
+  --popover: var(--color-card-bg);
+  --popover-foreground: var(--color-text-primary);
+  --primary: var(--color-accent);
+  --primary-foreground: #0d0018;
+  --secondary: var(--color-bg-secondary);
+  --secondary-foreground: var(--color-text-primary);
+  --muted: var(--color-bg-tertiary);
+  --muted-foreground: var(--color-text-secondary);
+  --accent: var(--color-card-bg-hover);
+  --accent-foreground: var(--color-text-primary);
+  --destructive: var(--color-defeat);
+  --border: var(--color-border);
+  --input: var(--color-border);
+  --ring: var(--color-accent);
+  --sidebar: var(--color-bg-secondary);
+  --sidebar-foreground: var(--color-text-primary);
+  --sidebar-primary: var(--color-accent);
+  --sidebar-primary-foreground: #0d0018;
+  --sidebar-accent: var(--color-card-bg-hover);
+  --sidebar-accent-foreground: var(--color-text-primary);
+  --sidebar-border: var(--color-border);
+  --sidebar-ring: var(--color-accent);
+}
+
+/* ============================================
+   TAILWIND THEME (shadcn + semantic colors)
+   ============================================ */
+@theme inline {
+  /* UI: texto, botões, labels, inputs, tabelas, cards (~80% do site) */
+  --font-sans: "Space Grotesk Variable", sans-serif;
+  /* Display: títulos, headers, números, destaque */
+  --font-display: "Orbitron", sans-serif;
+  --color-victory: var(--color-victory);
+  --color-victory-bg: var(--color-victory-bg);
+  --color-victory-border: var(--color-victory-border);
+  --color-defeat: var(--color-defeat);
+  --color-defeat-bg: var(--color-defeat-bg);
+  --color-defeat-border: var(--color-defeat-border);
+  --color-card-hover: var(--color-card-bg-hover);
+  --color-accent-hover: var(--color-accent-hover);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* ============================================
+   THEME TRANSITION (smooth switch light/dark)
+   ============================================ */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply min-h-full font-sans;
+    transition:
+      background-color var(--transition-theme),
+      color var(--transition-theme);
+  }
+
+  /* Títulos usam fonte display (Orbitron) por padrão */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+
+  /* Botão com fonte display (Orbitron) + negrito + texto claro do tema */
+  .btn-display {
+    font-weight: 700;
+    color: var(--primary-foreground);
+  }
+
+  body {
+    @apply min-h-full bg-background text-foreground;
+    transition:
+      background-color var(--transition-theme),
+      color var(--transition-theme);
+  }
+
+  #root {
+    min-height: 100%;
+    transition:
+      background-color var(--transition-theme),
+      color var(--transition-theme);
+  }
+
+  /* Wrapper that uses theme colors — add to main layout for smooth theme switch */
+  .theme-transition,
+  .theme-transition [class*="bg-background"],
+  .theme-transition [class*="bg-card"],
+  .theme-transition [class*="bg-muted"],
+  .theme-transition [class*="bg-popover"],
+  .theme-transition [class*="bg-accent"],
+  .theme-transition [class*="border-border"] {
+    transition:
+      background-color var(--transition-theme),
+      border-color var(--transition-theme),
+      color var(--transition-theme);
+  }
+
+  /* Neon no logo: light = quase nenhum (legível); dark = glow; hover = magenta */
+  .logo-neon {
+    filter: none;
+    transition: filter var(--transition-base);
+  }
+  .logo-neon:hover {
+    filter: drop-shadow(0 0 2px var(--color-accent));
+  }
+  .dark .logo-neon {
+    filter: drop-shadow(0 0 3px var(--color-accent)) drop-shadow(0 0 6px var(--color-accent));
+  }
+  .dark .logo-neon:hover {
+    filter: drop-shadow(0 0 4px var(--color-neon-hover)) drop-shadow(0 0 8px var(--color-neon-hover));
+  }
+  .logo-neon-text {
+    text-shadow: none;
+    transition: text-shadow var(--transition-base);
+  }
+  .logo-neon:hover .logo-neon-text {
+    text-shadow: 0 0 2px var(--color-accent);
+  }
+  .dark .logo-neon-text {
+    text-shadow: var(--shadow-neon-text);
+  }
+  .dark .logo-neon:hover .logo-neon-text {
+    text-shadow: 0 0 5px var(--color-neon-hover), 0 0 10px var(--color-neon-hover);
+  }
+
+  /* Toast (Sonner) — tema Voidepedia: centro da tela + neon forte */
+  .toaster-voidepedia[data-sonner-toaster] {
+    left: 85% !important;
+    top: 5% !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: translate(-50%, -50%) !important;
+  }
+  .toaster-voidepedia [data-sonner-toast] {
+    background: var(--card) !important;
+    border: 1px solid var(--border) !important;
+    color: var(--foreground) !important;
+    border-radius: var(--radius) !important;
+    box-shadow: var(--shadow-neon-toast) !important;
+  }
+  .toaster-voidepedia [data-sonner-toast][data-type="success"] {
+    border-color: var(--color-victory-border) !important;
+    box-shadow: 0 0 16px rgba(34, 197, 94, 0.35), 0 0 32px rgba(34, 197, 94, 0.2), 0 0 48px rgba(34, 197, 94, 0.1) !important;
+  }
+  .toaster-voidepedia [data-sonner-toast][data-type="error"] {
+    border-color: var(--color-defeat-border) !important;
+    box-shadow: 0 0 16px rgba(239, 68, 68, 0.35), 0 0 32px rgba(239, 68, 68, 0.2), 0 0 48px rgba(239, 68, 68, 0.1) !important;
+  }
+  .toaster-voidepedia .toast-title-voidepedia {
+    color: var(--foreground) !important;
+    font-weight: 600;
+  }
+  .toaster-voidepedia .toast-description-voidepedia {
+    color: var(--muted-foreground) !important;
+  }
+  .toaster-voidepedia .toast-action-voidepedia,
+  .toaster-voidepedia [data-sonner-toast] [data-button][data-action] {
+    background: var(--primary) !important;
+    color: var(--primary-foreground) !important;
+    border-radius: var(--radius-md) !important;
+    font-weight: 600;
+  }
+  .toaster-voidepedia .toast-close-voidepedia {
+    background: var(--muted) !important;
+    border: none !important;
+    color: var(--muted-foreground) !important;
+    width: 1.75rem !important;
+    height: 1.75rem !important;
+    border-radius: var(--radius) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    opacity: 0.9;
+    transition: opacity 0.15s, background 0.15s, color 0.15s;
+  }
+  .toaster-voidepedia .toast-close-voidepedia:hover {
+    opacity: 1;
+    background: var(--border) !important;
+    color: var(--foreground) !important;
+  }
+}
