@@ -6,76 +6,80 @@ const REGION_BASE: Record<string, string> = {
   asia: "https://asia.api.riotgames.com",
 }
 
-/**
- * Proxy para a API Riot. A chave fica só em RIOT_API_KEY no Vercel (env),
- * nunca no repositório nem no front.
- *
- * Front usa: VITE_RIOT_API_PROXY = "https://seu-dominio.vercel.app/api/riot"
- * Rewrite no vercel.json manda /api/riot/* para cá com ?path=...
- */
-export default async function handler(
-  req: VercelRequest,
-  res: VercelResponse
-): Promise<void> {
+function setCors(res: VercelResponse) {
+  res.setHeader("Access-Control-Allow-Origin", "*")
+  res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS")
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With")
+}
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  // ✅ Set CORS first, before ANY early returns
+  setCors(res)
+
+  if (req.method === "OPTIONS") {
+    res.status(204).end()
+    return
+  }
+
   if (req.method !== "GET") {
-    res.setHeader("Allow", "GET")
     res.status(405).json({ error: "Method not allowed" })
     return
   }
 
   const key = process.env.RIOT_API_KEY
   if (!key) {
-    res.status(500).json({
-      error: "RIOT_API_KEY not configured. Set it in Vercel project environment.",
-    })
+    // ✅ Log all env keys available (never log values) to debug missing vars
+    console.error("RIOT_API_KEY missing. Available env keys:", Object.keys(process.env))
+    res.status(500).json({ error: "RIOT_API_KEY not configured" })
     return
   }
 
-  // Path: do query (rewrite envia ?path=account/v1/...) ou da URL
-  let riotPath: string
-  const pathFromQuery = req.query.path
-  if (Array.isArray(pathFromQuery) && pathFromQuery.length > 0) {
-    riotPath = "/" + pathFromQuery.join("/")
-  } else if (typeof pathFromQuery === "string" && pathFromQuery) {
-    riotPath = pathFromQuery.startsWith("/") ? pathFromQuery : "/" + pathFromQuery
-  } else if (req.url) {
-    const pathname = req.url.split("?")[0]
-    const prefix = "/api/riot"
-    riotPath = pathname.startsWith(prefix) ? pathname.slice(prefix.length) || "/" : "/"
-  } else {
-    riotPath = "/"
-  }
+  const { region = "americas", ...query } = req.query
+  const regionStr = Array.isArray(region) ? region[0] : region
+  const base = REGION_BASE[regionStr]
 
-  // Normaliza: se o front mandar /riot/account/... (build antigo), tira o /riot/ e aplica a regra abaixo.
-  if (riotPath.startsWith("/riot/")) riotPath = riotPath.slice(6)
-  // Paths da Riot: /riot/account/..., /lol/match/... O front manda /account/... e /match/...; a gente coloca o prefixo.
-  if (riotPath.startsWith("/account")) riotPath = "/riot" + riotPath
-  else if (riotPath.startsWith("/match")) riotPath = "/lol" + riotPath
-
-  const region = (req.query.region as string) || "americas"
-  const base = REGION_BASE[region]
   if (!base) {
-    res.status(400).json({ error: "Invalid region" })
+    res.status(400).json({ error: `Invalid region: ${regionStr}` })
     return
   }
 
-  const search = new URLSearchParams(req.query as Record<string, string>)
-  search.delete("region")
-  search.delete("path")
-  const qs = search.toString()
-  const url = qs ? `${base}${riotPath}?${qs}` : `${base}${riotPath}`
+  // ✅ Strip /api/riot prefix reliably regardless of query string
+  const rawPath = req.url ?? ""
+  let path = rawPath.replace(/^\/api\/riot/, "").split("?")[0]
 
-  res.setHeader("X-Proxy-Target", url)
+  // Normalize Riot API path prefixes
+  if (path.startsWith("/account")) path = "/riot" + path
+  if (path.startsWith("/match"))   path = "/lol" + path
+
+  // ✅ Build query params cleanly, excluding 'region' which is our own param
+  const search = new URLSearchParams()
+  for (const [k, v] of Object.entries(query)) {
+    if (k === "region") continue
+    if (Array.isArray(v)) v.forEach(val => search.append(k, val))
+    else if (v != null) search.set(k, v)
+  }
+
+  const url = `${base}${path}?${search}`
+  console.log("Proxying to:", url)
 
   try {
     const response = await fetch(url, {
-      headers: { "Accept": "application/json", "X-Riot-Token": key },
+      headers: {
+        "X-Riot-Token": key,
+        "Accept": "application/json",
+      },
     })
-    const data = await response.json().catch(() => ({}))
+
+    const data = await response.json()
+
+    if (!response.ok) {
+      console.error(`Riot API error ${response.status}:`, data)
+    }
+
+    res.setHeader("Cache-Control", "s-maxage=60")
     res.status(response.status).json(data)
-  } catch (err) {
-    res.status(502).json({
-      error: err instanceof Error ? err.message : "Proxy request failed",
-    })
+  } catch (error) {
+    console.error("Proxy failed:", error)
+    res.status(500).json({ error: "Proxy failed" })
   }
 }

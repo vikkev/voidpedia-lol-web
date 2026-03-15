@@ -1,11 +1,11 @@
 import type { RiotApiError, RiotRegion } from "@/types/riot"
 
 /** Token fica no Vercel (RIOT_API_KEY); o front só usa o proxy. */
-const PROXY = import.meta.env.VITE_RIOT_API_PROXY as string | undefined
+const PROXY = import.meta.env.VITE_RIOT_API_PROXY || undefined
 
 /** Base URL: sempre o proxy (token no env do Vercel, não no repo). */
 export function getRiotBaseUrl(): string {
-  return PROXY ?? ""
+  return PROXY ?? "/api/riot"
 }
 
 export function getRiotHeaders(): HeadersInit {
