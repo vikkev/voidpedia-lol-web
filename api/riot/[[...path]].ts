@@ -45,6 +45,8 @@ export default async function handler(
     riotPath = "/"
   }
 
+  // Normaliza: se o front mandar /riot/account/... (build antigo), tira o /riot/ e aplica a regra abaixo.
+  if (riotPath.startsWith("/riot/")) riotPath = riotPath.slice(6)
   // Paths da Riot: /riot/account/..., /lol/match/... O front manda /account/... e /match/...; a gente coloca o prefixo.
   if (riotPath.startsWith("/account")) riotPath = "/riot" + riotPath
   else if (riotPath.startsWith("/match")) riotPath = "/lol" + riotPath
