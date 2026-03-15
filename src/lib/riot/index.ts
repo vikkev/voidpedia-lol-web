@@ -3,4 +3,5 @@ export {
   getRiotHeaders,
   isRiotProxy,
   riotFetch,
+  riotFetchPlatform,
 } from "./client"

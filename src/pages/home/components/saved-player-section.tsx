@@ -1,6 +1,7 @@
 import { useTranslation } from "@/contexts/i18n"
 import { usePlayerSearch } from "@/contexts/player-search"
 import { MatchHistory } from "./match-history"
+import { PlayerRanks } from "./player-ranks"
 
 /**
  * Seção da home que exibe o jogador salvo no cache e suas partidas.
@@ -36,6 +37,12 @@ export function SavedPlayerSection() {
         <p className="font-medium text-foreground">
           {player.gameName}#{player.tagLine}
         </p>
+      </div>
+      <div className="flex flex-col gap-2">
+        <h3 className="font-display text-sm font-semibold text-foreground">
+          {t("ranks.title")}
+        </h3>
+        <PlayerRanks puuid={player.puuid} region={region} />
       </div>
       <MatchHistory puuid={player.puuid} region={region} />
     </section>

@@ -1,4 +1,4 @@
-import type { RiotApiError, RiotRegion } from "@/types/riot"
+import type { RiotApiError, RiotPlatform, RiotRegion } from "@/types/riot"
 
 /** Token fica no Vercel (RIOT_API_KEY); o front só usa o proxy. */
 const PROXY = import.meta.env.VITE_RIOT_API_PROXY || undefined
@@ -27,6 +27,30 @@ export async function riotFetch<T>(
   const base = getRiotBaseUrl()
   const search = new URLSearchParams(query)
   search.set("region", region)
+  const url = search.toString() ? `${base}${path}?${search}` : `${base}${path}`
+
+  const res = await fetch(url, { headers: getRiotHeaders() })
+
+  if (!res.ok) {
+    const body = (await res.json().catch(() => ({}))) as RiotApiError
+    const message = body?.status?.message ?? res.statusText
+    throw new Error(message || `Erro ${res.status}`)
+  }
+
+  return res.json() as Promise<T>
+}
+
+/**
+ * GET na API Riot via proxy usando platform (Summoner v4, League v4).
+ */
+export async function riotFetchPlatform<T>(
+  platform: RiotPlatform,
+  path: string,
+  query?: Record<string, string>
+): Promise<T> {
+  const base = getRiotBaseUrl()
+  const search = new URLSearchParams(query)
+  search.set("platform", platform)
   const url = search.toString() ? `${base}${path}?${search}` : `${base}${path}`
 
   const res = await fetch(url, { headers: getRiotHeaders() })

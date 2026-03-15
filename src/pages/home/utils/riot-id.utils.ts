@@ -1,4 +1,4 @@
-import type { RiotRegion } from "../types"
+import type { RiotPlatform, RiotRegion } from "../types"
 
 /** Region options for the header/home select. Label is via i18n key (region.americas, etc.). */
 export const REGIONS: { value: RiotRegion; labelKey: "region.americas" | "region.europe" | "region.asia" }[] = [
@@ -6,6 +6,13 @@ export const REGIONS: { value: RiotRegion; labelKey: "region.americas" | "region
   { value: "europe", labelKey: "region.europe" },
   { value: "asia", labelKey: "region.asia" },
 ]
+
+/** Default platform per region for Summoner/League v4 (ranked). */
+export const REGION_TO_PLATFORM: Record<RiotRegion, RiotPlatform> = {
+  americas: "br1",
+  europe: "euw1",
+  asia: "kr",
+}
 
 /**
  * Separa "gameName#tagLine" em { gameName, tagLine }.
