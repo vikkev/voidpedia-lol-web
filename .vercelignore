@@ -1,0 +1,4 @@
+# Build output: Vercel gera no deploy, não usar do repo
+dist
+dist-ssr
+node_modules
